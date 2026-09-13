@@ -1,0 +1,97 @@
+<section class="hero-section">
+  <div class="hero-copy">
+    <p class="eyebrow">Live loan comparison · Uganda</p>
+    <h1>See which bank gives you the <span>cheapest loan</span> before you apply.</h1>
+    <p class="hero-text">Choose a loan type, enter your needs, and compare the true cost of borrowing across Uganda’s leading lenders.</p>
+  </div>
+</section>
+
+<div class="controls-panel">
+  <div class="type-tabs">
+    @for (t of loanTypes(); track $index) {
+
+      <button class="type-tab" [class.active]="t === loanType()" (click)="loanType.set(t); loanQuery.set('')">
+        {{ t }}
+      </button>
+    }
+  </div>
+
+  <div class="search-row">
+    <label class="loan-search">
+      <span class="field-label">Search any loan</span>
+      <input type="search" [ngModel]="loanQuery()" (ngModelChange)="loanQuery.set($event)" placeholder="e.g. mortgage, salary, education, SME" />
+    </label>
+  </div>
+
+  <p class="type-desc">{{ loanQuery().trim() ? 'Showing products across all banks matching your loan request.' : typeInfo[loanType()] }}</p>
+
+  <div class="controls">
+    <label>
+      Loan amount (UGX)
+      <input type="number" [ngModel]="amount()" (ngModelChange)="amount.set(+$event)" step="1000000" min="100000" />
+    </label>
+    <label>
+      Term (months)
+      <input type="number" [ngModel]="term()" (ngModelChange)="term.set(+$event)" min="3" max="300" />
+    </label>
+  </div>
+</div>
+
+@if (results().length === 0) {
+  <div class="placeholder">
+    No {{ loanType() }} loans match {{ amount() | currency:'UGX':'USh ':'1.0-0' }} over {{ term() }} months.
+    Try a longer term or a different amount.
+  </div>
+} @else {
+  @if (recommended(); as rec) {
+    <div class="recommend-banner">
+      <span class="rec-badge">✓ Recommended for you</span>
+      <div class="rec-content">
+        <app-bank-logo [bankId]="rec.bankId" [size]="34" />
+        <span class="rec-text"><strong>{{ rec.bank }}</strong> — {{ rec.name }} is the lowest total-cost {{ loanType() }} loan for your amount and term.</span>
+      </div>
+    </div>
+  }
+
+  @if (saving() > 0) {
+    <div class="savings-banner">
+      You could save <strong>{{ saving() | currency:'UGX':'USh ':'1.0-0' }}</strong> by choosing the cheapest option above.
+    </div>
+  }
+
+  <p class="result-count">{{ results().length }} banks offer {{ loanType() }} loans matching your request</p>
+  <div class="cards">
+    @for (r of results(); track r.bankId + r.name; let i = $index) {
+      <div class="loan-card" [class.best]="i === 0">
+        @if (i === 0) { <span class="badge">Best value</span> }
+        <div class="loan-head">
+          <app-bank-logo [bankId]="r.bankId" [size]="40" />
+          <div>
+            <span class="bank">{{ r.bank }}</span>
+            <span class="product">{{ r.name }}</span>
+          </div>
+          <span class="rate">{{ r.annualRate }}%<small>p.a.</small></span>
+        </div>
+
+        <div class="loan-grid">
+          <div><span class="k">Monthly</span><span class="v">{{ r.monthly | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+          <div><span class="k">Total repayable</span><span class="v">{{ r.totalRepay | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+          <div><span class="k">Processing fee</span><span class="v">{{ r.fee | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+          <div><span class="k">Total cost</span><span class="v strong">{{ r.totalCost | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+        </div>
+
+        <div class="tags">
+          <span class="tag">{{ r.collateral ? 'Collateral required' : 'No collateral' }}</span>
+          <span class="tag">Min score {{ r.minScore }}</span>
+          <span class="tag">Up to {{ r.maxAmount | currency:'UGX':'USh ':'1.0-0' }}</span>
+        </div>
+
+        <div class="contact-row">
+          @if (r.phone) { <a class="contact-button" href="tel:{{ r.phone }}">Call</a> }
+          @if (r.email) { <a class="contact-button" href="mailto:{{ r.email }}">Email</a> }
+          @if (r.contactUrl) { <a class="contact-button" href="{{ r.contactUrl }}" target="_blank" rel="noopener noreferrer">Visit site</a> }
+        </div>
+      </div>
+    }
+  </div>
+}

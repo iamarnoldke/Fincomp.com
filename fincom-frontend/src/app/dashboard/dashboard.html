@@ -1,0 +1,180 @@
+<!-- Welcome bar -->
+<section class="hero-panel">
+  <div class="hero-copy">
+    <p class="eyebrow">Financial overview</p>
+    <h1>Financial overview</h1>
+    <p>{{ today }} · Your loan options and credit profile are in a healthy position.</p>
+  </div>
+  <a class="hero-cta" routerLink="/loans">Compare loans →</a>
+</section>
+
+<!-- KPI row -->
+<section class="kpis" aria-label="Summary metrics">
+  <div class="kpi">
+    <div class="kpi-icon score">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/><path d="M12 7v5l3 2"/></svg>
+    </div>
+    <span class="kpi-label">Credit Score</span>
+    <span class="kpi-value">{{ creditScore() }}</span>
+    <span class="kpi-sub up">{{ scoreRating() }} standing</span>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-icon savings">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5"/><path d="M16 7h5"/></svg>
+    </div>
+    <span class="kpi-label">Potential Savings</span>
+    <span class="kpi-value">{{ potentialSavings() | currency:'UGX':'USh ':'1.0-0' }}</span>
+    <span class="kpi-sub">vs highest-cost loan</span>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-icon products">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="kpi-label">Products Compared</span>
+    <span class="kpi-value">{{ productsCompared() }}</span>
+    <span class="kpi-sub">across {{ bankCount() }} banks</span>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-icon apps">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+    </div>
+    <span class="kpi-label">Active Applications</span>
+    <span class="kpi-value">3</span>
+    <span class="kpi-sub">2 pending review</span>
+  </div>
+</section>
+<section class="popular-section">
+  <div class="card">
+    <div class="section-header">
+      <h2>Most Popular Loans</h2>
+      <a class="link" routerLink="/loans">Compare all</a>
+    </div>
+    <div class="popular-grid">
+      @for (p of popularLoans(); track p.bank + p.name; let i = $index) {
+        <div class="pop-item">
+          <span class="pop-rank">{{ i + 1 }}</span>
+          <div class="pop-info">
+            <span class="pop-bank">{{ p.bank }}</span>
+            <span class="pop-name">{{ p.type }} · {{ p.name }}</span>
+          </div>
+          <div class="pop-meta">
+            <span class="pop-rate">{{ p.rate }}%</span>
+            <div class="pop-bar"><div class="pop-fill" [style.width.%]="p.popularity"></div></div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Main analytics grid -->
+<section class="main-grid">
+  <div class="card chart-card">
+    <div class="section-header">
+      <h2>Loan Rates Across Banks</h2>
+      <a class="link" routerLink="/loans">View all</a>
+    </div>
+    <div class="rate-bars">
+      @for (b of rateBars(); track b.bank) {
+        <div class="rate-row">
+          <span class="rate-bank">{{ b.bank }}</span>
+          <div class="rate-track">
+            <div class="rate-fill" [class.best]="b.best" [style.width.%]="b.pct"></div>
+          </div>
+          <span class="rate-val">{{ b.rate }}%</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="side-col">
+    <div class="card score-card">
+      <h2>Your Credit Score</h2>
+      <svg viewBox="0 0 130 130" width="130" height="130" class="ring">
+        <circle cx="65" cy="65" r="52" fill="none" stroke="var(--brand-light)" stroke-width="12" />
+        <circle cx="65" cy="65" r="52" fill="none" stroke="var(--brand)" stroke-width="12" stroke-linecap="round"
+          [attr.stroke-dasharray]="scoreDash() + ' ' + circ" transform="rotate(-90 65 65)" />
+        <text x="65" y="62" text-anchor="middle" class="ring-num">{{ creditScore() }}</text>
+        <text x="65" y="80" text-anchor="middle" class="ring-lbl">{{ scoreRating() }}</text>
+      </svg>
+      <a class="link center" routerLink="/credit-score">See breakdown →</a>
+    </div>
+
+    <div class="card best-card">
+      <span class="best-tag">Best deal now</span>
+      @if (bestLoan().bankId) { <app-bank-logo [bankId]="bestLoan().bankId" [size]="36" /> }
+      <span class="best-bank">{{ bestLoan().bank }}</span>
+      <span class="best-rate">{{ bestLoan().rate }}%<small> p.a.</small></span>
+      <a class="best-btn" routerLink="/loans">Compare</a>
+    </div>
+  </div>
+</section>
+
+<!-- Lower zone -->
+<section class="lower-grid">
+  <div class="card">
+    <div class="section-header"><h2>Recommended for You</h2></div>
+    <ul class="rec-list">
+      @for (r of recommended(); track r.bank + r.name) {
+        <li>
+          <app-bank-logo class="rec-chip" [bankId]="r.bankId" [size]="38" />
+          <div class="rec-info">
+            <span class="rec-bank">{{ r.bank }}</span>
+            <span class="rec-name">{{ r.name }}</span>
+          </div>
+          <span class="rec-rate">{{ r.rate }}%</span>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-header"><h2>Recent Activity</h2></div>
+    <ul class="act-list">
+      @for (a of activity(); track a.text) {
+        <li>
+          <span class="act-dot" [class]="a.kind"></span>
+          <span class="act-text">{{ a.text }}</span>
+          <span class="act-when">{{ a.when }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="section-header"><h2>Quick Actions</h2></div>
+    <div class="actions">
+      <a routerLink="/loans" class="action">Compare Loans</a>
+      <a routerLink="/credit-score" class="action">Check Score</a>
+      <a routerLink="/accounts" class="action">Open Account</a>
+      <a routerLink="/insurance" class="action">Compare Insurance</a>
+    </div>
+  </div>
+</section>
+
+<section class="popular-section">
+  <div class="card">
+    <div class="section-header">
+      <h2>Popular Insurance Policies</h2>
+      <a class="link" routerLink="/insurance">Compare all</a>
+    </div>
+    <div class="popular-grid">
+      @for (p of popularInsurance(); track p.bank + p.name; let i = $index) {
+        <div class="pop-item">
+          <span class="pop-rank">{{ i + 1 }}</span>
+          <div class="pop-info">
+            <span class="pop-bank">{{ p.bank }}</span>
+            <span class="pop-name">{{ p.type }} · {{ p.name }}</span>
+          </div>
+          <div class="pop-meta">
+            <span class="pop-rate">{{ p.insurer }}</span>
+            <div class="pop-bar"><div class="pop-fill" [style.width.%]="p.popularity"></div></div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

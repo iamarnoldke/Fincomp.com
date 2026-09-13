@@ -1,0 +1,176 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.refresh-button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--brand);
+  color: white;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.refresh-button[disabled] {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.report-button {
+  display: inline-block;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--brand);
+  padding: 0.6rem 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--brand) 12%, black);
+}
+
+.report-button:hover {
+  background: color-mix(in srgb, var(--brand) 6%, white);
+}
+
+.score-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.gauge-card, .factors-card, .eligible-card, .state-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gauge-card:hover, .factors-card:hover, .eligible-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(29, 132, 214, 0.16);
+}
+
+.gauge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.score-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.trend-pill, .pill {
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  background: color-mix(in srgb, var(--brand) 12%, white);
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.score-num { font-size: 2.6rem; font-weight: 800; fill: var(--text); }
+.score-scale { font-size: 0.85rem; fill: var(--text-muted); }
+
+.summary-copy {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.rating-pill {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.factors-card h2, .eligible-card h2, .state-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.factor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.6rem;
+  margin: 0 -0.6rem;
+  border-radius: 8px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+.factor:hover { background: var(--brand-light); }
+.factor:last-child { border-bottom: none; }
+
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot.good { background: var(--success); }
+.dot.fair { background: var(--warning); }
+.dot.poor { background: var(--danger); }
+
+.f-label { font-weight: 600; color: var(--text); }
+.f-weight { margin-left: auto; font-size: 0.85rem; color: var(--text-muted); }
+
+.error-card {
+  border: 1px solid color-mix(in srgb, var(--danger) 20%, white);
+  margin-bottom: 1.25rem;
+}
+
+.error-card p {
+  margin: 0.45rem 0 0;
+  color: var(--text-muted);
+}
+
+.eligible-card ul { list-style: none; margin: 0; padding: 0; }
+.eligible-card li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0.6rem;
+  margin: 0 -0.6rem;
+  border-radius: 8px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+.eligible-card li:hover { background: var(--brand-light); }
+.eligible-card li:last-child { border-bottom: none; }
+
+.e-bank { font-weight: 700; color: var(--text); min-width: 160px; }
+.e-name { color: var(--text-muted); font-size: 0.9rem; }
+.e-rate { margin-left: auto; font-weight: 700; color: var(--brand); }
+
+@media (max-width: 800px) {
+  .page-header { flex-direction: column; align-items: flex-start; }
+  .score-layout { grid-template-columns: 1fr; }
+  .eligible-card li { flex-direction: column; align-items: flex-start; }
+  .e-rate { margin-left: 0; }
+}

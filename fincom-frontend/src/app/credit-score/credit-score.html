@@ -1,0 +1,68 @@
+<header class="page-header">
+  <div>
+    <h1>Credit Score</h1>
+    <p class="greeting">Your creditworthiness and the offers you are likely to qualify for.</p>
+  </div>
+  <button class="refresh-button" type="button" (click)="refresh()" [disabled]="loading()">
+    {{ loading() ? 'Refreshing…' : 'Refresh' }}
+  </button>
+  <a class="report-button" href="https://gnugridcrb.com/" target="_blank" rel="noopener noreferrer">Get full credit report</a>
+</header>
+
+@if (error()) {
+  <div class="state-card error-card" role="alert">
+    <h2>We could not load the latest score</h2>
+    <p>{{ error() }}</p>
+  </div>
+}
+
+<div class="score-layout">
+  <div class="gauge-card">
+    <div class="score-meta">
+      <span class="eyebrow">Current score</span>
+      <span class="trend-pill">{{ summary()?.trend ?? '+0 pts' }}</span>
+    </div>
+    <svg viewBox="0 0 200 200" width="200" height="200">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--brand-light)" stroke-width="16" />
+      <circle
+        cx="100" cy="100" r="80" fill="none"
+        [attr.stroke]="rating().color"
+        stroke-width="16"
+        stroke-linecap="round"
+        [attr.stroke-dasharray]="dash() + ' ' + circ"
+        transform="rotate(-90 100 100)"
+      />
+      <text x="100" y="94" text-anchor="middle" class="score-num">{{ score() }}</text>
+      <text x="100" y="118" text-anchor="middle" class="score-scale">of 850</text>
+    </svg>
+    <span class="rating-pill" [style.background]="rating().color">{{ rating().label }}</span>
+    <p class="summary-copy">{{ summary()?.message ?? 'Keep your payments steady to protect your borrowing profile.' }}</p>
+  </div>
+
+  <div class="factors-card">
+    <div class="card-heading">
+      <h2>What affects your score</h2>
+      <span class="pill neutral">{{ summary()?.label ?? 'Stable' }}</span>
+    </div>
+    @for (f of factors(); track f.label) {
+      <div class="factor">
+        <span class="dot" [class]="f.status"></span>
+        <span class="f-label">{{ f.label }}</span>
+        <span class="f-weight">{{ f.weight }}</span>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="eligible-card">
+  <h2>Loans you qualify for</h2>
+  <ul>
+    @for (e of eligible(); track e.bank + e.name) {
+      <li>
+        <span class="e-bank">{{ e.bank }}</span>
+        <span class="e-name">{{ e.name }}</span>
+        <span class="e-rate">{{ e.rate }}% p.a.</span>
+      </li>
+    }
+  </ul>
+</div>

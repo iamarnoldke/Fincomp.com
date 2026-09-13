@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FincompApp</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <app-root></app-root>
+  <div class="theme-switcher" aria-hidden="false">
+    <button class="theme-swatch" data-theme="ocean" title="Ocean"></button>
+    <button class="theme-swatch" data-theme="sunset" title="Sunset"></button>
+    <button class="theme-swatch" data-theme="forest" title="Forest"></button>
+    <button class="theme-swatch" data-theme="purple" title="Purple"></button>
+  </div>
+  <script>
+    (function(){
+      const body = document.body;
+      const available = ['ocean','sunset','forest','purple'];
+      const saved = localStorage.getItem('fincom:theme') || 'ocean';
+      if(available.includes(saved)) body.classList.add('theme-'+saved);
+      document.querySelectorAll('.theme-swatch').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const t = btn.getAttribute('data-theme');
+          available.forEach(a=> body.classList.remove('theme-'+a));
+          body.classList.add('theme-'+t);
+          localStorage.setItem('fincom:theme', t);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

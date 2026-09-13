@@ -1,0 +1,35 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="eyebrow">Welcome back</span>
+      <h1>Log in to Fincomp</h1>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="submit()">
+      <label class="field">
+        <span>Email</span>
+        <input type="email" [(ngModel)]="email" name="email" placeholder="you@example.com"
+              autocomplete="email" required [disabled]="loading()" />
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="Enter your password"
+              autocomplete="current-password" required [disabled]="loading()" />
+      </label>
+
+      @if (error) {
+        <div class="error-banner" role="alert">{{ error }}</div>
+      }
+
+      <button class="primary-btn" type="submit" [disabled]="loading()">
+        @if (loading()) { Signing in… } @else { Log in }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <span>New to Fincom?</span>
+      <a routerLink="/signup">Create an account</a>
+    </div>
+  </div>
+</div>

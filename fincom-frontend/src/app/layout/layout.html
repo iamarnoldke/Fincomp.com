@@ -1,0 +1,33 @@
+<div class="shell">
+  <div class="main">
+    <header class="topbar">
+      <div class="brand-block">
+        <a class="logo" routerLink="/dashboard" aria-label="Fincomp dashboard">
+          <span class="logo-mark" aria-hidden="true">F</span>
+          <span class="brand-copy">
+            <strong>Fincomp</strong>
+            <small>Finance hub</small>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Main navigation">
+          @for (item of navItems(); track item.path) {
+            <a class="nav-item" [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+          }
+        </nav>
+      </div>
+
+      <div class="topbar-actions">
+        @if (isLoggedIn()) {
+          <span class="user-chip">Hi, {{ user()?.name ?? 'there' }}</span>
+          <button class="logout" type="button" (click)="logout()">Log out</button>
+        } @else {
+          <a class="login-link" routerLink="/login">Log in</a>
+        }
+      </div>
+    </header>
+
+    <main class="page" id="page-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>

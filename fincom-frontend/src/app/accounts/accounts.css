@@ -1,0 +1,119 @@
+/* Reuse the tab styles from loans — repeated here so the page is standalone */
+.type-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.type-tab {
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.type-tab:hover { border-color: var(--brand-soft); color: var(--brand-dark); }
+.type-tab.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+.recommend-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  background: var(--brand-light);
+  border: 1px solid var(--brand-soft);
+  color: var(--brand-dark);
+  padding: 0.85rem 1.1rem;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.rec-badge {
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.rec-content { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+.rec-text { font-size: 0.9rem; }
+
+.acc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+.acc-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.acc-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--brand-soft);
+  box-shadow: 0 18px 40px rgba(29, 132, 214, 0.2);
+}
+
+.acc-card.best { border-color: var(--brand); border-width: 2px; }
+
+.badge {
+  position: absolute;
+  top: -11px;
+  left: 1.4rem;
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+}
+
+.acc-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
+.acc-bank { display: block; font-weight: 700; color: var(--text); }
+.acc-name { display: block; font-size: 0.8rem; color: var(--text-muted); }
+.acc-type {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  background: var(--brand-light);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+.charges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 10px;
+  margin-bottom: 1.1rem;
+}
+.charge { display: flex; flex-direction: column; gap: 0.15rem; }
+.charge.highlight { grid-column: span 2; border-top: 1px solid var(--border); padding-top: 0.6rem; }
+.c-k { font-size: 0.72rem; color: var(--text-muted); }
+.c-v { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.charge.highlight .c-v { color: var(--success); }
+
+.req-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.req ul { margin: 0; padding-left: 1.1rem; }
+.req li { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+
+@media (max-width: 600px) {
+  .acc-grid { grid-template-columns: 1fr; }
+}

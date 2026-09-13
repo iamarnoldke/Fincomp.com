@@ -1,0 +1,113 @@
+/* Theme variables and utilities for Fincom */
+:root{
+	--brand: #1d84d6;
+	--brand-dark: #0b61a3;
+	--brand-light: #eaf6ff;
+	--brand-soft: rgba(29,132,214,0.08);
+	--bg: linear-gradient(180deg,#f7fbff 0%, #eef7ff 100%);
+	--text: #0f1724;
+	--text-muted: #6b7280;
+	--border: #e6eef7;
+}
+
+/* Ocean (default) theme */
+.theme-ocean{
+	--brand: #1d84d6;
+	--brand-dark: #0b61a3;
+	--brand-light: #eaf6ff;
+	--brand-soft: rgba(29,132,214,0.08);
+	--bg: linear-gradient(180deg,#f7fbff 0%, #eef7ff 100%);
+	--text: #0f1724;
+	--text-muted: #6b7280;
+	--border: #e6eef7;
+}
+
+/* Warm sunset theme */
+.theme-sunset{
+	--brand: #ff6b6b;
+	--brand-dark: #c23b3b;
+	--brand-light: #fff0f0;
+	--brand-soft: rgba(255,107,107,0.08);
+	--bg: linear-gradient(135deg,#fff6f0,#fff0f6);
+	--text: #1b1b1b;
+	--text-muted: #6b6b6b;
+	--border: #fdeaea;
+}
+
+/* Forest theme */
+.theme-forest{
+	--brand: #2fa16f;
+	--brand-dark: #1a6e4b;
+	--brand-light: #eaf9f0;
+	--brand-soft: rgba(47,161,111,0.08);
+	--bg: linear-gradient(135deg,#f3fff9,#e9f8f0);
+	--text: #072018;
+	--text-muted: #47675b;
+	--border: #e6f6ec;
+}
+
+/* Purple theme */
+.theme-purple{
+	--brand: #7c5cff;
+	--brand-dark: #4b2fff;
+	--brand-light: #f3efff;
+	--brand-soft: rgba(124,92,255,0.08);
+	--bg: linear-gradient(135deg,#fbf7ff,#f0edff);
+	--text: #121024;
+	--text-muted: #6b638f;
+	--border: #eee9ff;
+}
+
+/* Base page styling that respects theme variables */
+html, body {
+	height: 100%;
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Floating theme switcher UI */
+.theme-switcher{
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 60;
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: rgba(255,255,255,0.85);
+	border-radius: 12px;
+	box-shadow: 0 6px 20px rgba(15,23,36,0.08);
+	border: 1px solid var(--border);
+}
+
+.theme-swatch{
+	width: 34px;
+	height: 34px;
+	border-radius: 8px;
+	border: 0;
+	cursor: pointer;
+	box-shadow: 0 6px 18px rgba(15,23,36,0.06);
+	display: inline-block;
+}
+
+.theme-swatch[data-theme="ocean"]{ background: linear-gradient(135deg,#1d84d6,#0b61a3); }
+.theme-swatch[data-theme="sunset"]{ background: linear-gradient(135deg,#ff9a9e,#ff6b6b); }
+.theme-swatch[data-theme="forest"]{ background: linear-gradient(135deg,#8de7b1,#2fa16f); }
+.theme-swatch[data-theme="purple"]{ background: linear-gradient(135deg,#b597ff,#7c5cff); }
+
+/* Card and accent utilities */
+.card{
+	background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7));
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 1rem;
+	box-shadow: 0 6px 24px rgba(15,23,36,0.04);
+}
+
+.accent-text{ color: var(--brand); font-weight: 700; }
+.accent-bg{ background: linear-gradient(135deg,var(--brand),var(--brand-dark)); color: #fff; border-radius: 8px; padding: 0.4rem 0.6rem; display: inline-block; }
+

@@ -1,0 +1,93 @@
+<section class="hero-section">
+  <div class="hero-copy">
+    <p class="eyebrow">Bancassurance comparison · Uganda</p>
+    <h1>Find the <span>best value cover</span> from bank-partnered insurers.</h1>
+    <p class="hero-text">Choose a policy type, enter the cover you need, and compare premiums, excess, and benefits across Uganda’s leading banks.</p>
+  </div>
+</section>
+
+@if (error()) {
+  <div class="state-card error-card" role="alert">
+    <h2>We could not load insurance offers</h2>
+    <p>{{ error() }}</p>
+  </div>
+}
+
+<div class="controls-panel">
+  <div class="type-tabs">
+    @for (t of insuranceTypes(); track t) {
+      <button class="type-tab" [class.active]="t === insuranceType()" (click)="insuranceType.set(t); insuranceQuery.set('')">
+        {{ t }}
+      </button>
+    }
+  </div>
+
+  <div class="search-row">
+    <label class="ins-search">
+      <span class="field-label">Search any policy</span>
+      <input type="search" [ngModel]="insuranceQuery()" (ngModelChange)="insuranceQuery.set($event)" placeholder="e.g. motor, health, life, travel" />
+    </label>
+  </div>
+
+  <p class="type-desc">{{ insuranceQuery().trim() ? 'Showing policies across all banks matching your search.' : typeInfo[insuranceType()] }}</p>
+
+  <div class="controls">
+    <label>
+      Cover amount (UGX)
+      <input type="number" [ngModel]="cover()" (ngModelChange)="cover.set(+$event)" step="1000000" min="500000" />
+    </label>
+  </div>
+</div>
+
+@if (results().length === 0) {
+  <div class="placeholder">
+    No {{ insuranceType() }} policies match {{ cover() | currency:'UGX':'USh ':'1.0-0' }} of cover.
+    Try a different cover amount.
+  </div>
+} @else {
+  @if (recommended(); as rec) {
+    <div class="recommend-banner">
+      <span class="rec-badge">✓ Recommended for you</span>
+      <div class="rec-content">
+        <app-bank-logo [bankId]="rec.bankId" [size]="34" />
+        <span class="rec-text"><strong>{{ rec.bank }}</strong> — {{ rec.name }} gives the lowest annual premium for your cover amount.</span>
+      </div>
+    </div>
+  }
+
+  @if (saving() > 0) {
+    <div class="savings-banner">
+      You could save <strong>{{ saving() | currency:'UGX':'USh ':'1.0-0' }}</strong> a year in premiums by choosing the cheapest option above.
+    </div>
+  }
+
+  <p class="result-count">{{ results().length }} banks offer {{ insuranceType() }} cover matching your request</p>
+  <div class="cards">
+    @for (r of results(); track r.bankId + r.name; let i = $index) {
+      <div class="ins-card" [class.best]="i === 0">
+        @if (i === 0) { <span class="badge">Best value</span> }
+        <div class="ins-head">
+          <app-bank-logo [bankId]="r.bankId" [size]="40" />
+          <div>
+            <span class="bank">{{ r.bank }}</span>
+            <span class="product">{{ r.name }}</span>
+          </div>
+          <span class="premium">{{ r.annualPremium | currency:'UGX':'USh ':'1.0-0' }}<small>/yr</small></span>
+        </div>
+
+        <div class="ins-grid">
+          <div><span class="k">Underwriter</span><span class="v">{{ r.insurer }}</span></div>
+          <div><span class="k">Excess</span><span class="v">{{ r.excessAmount | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+          <div><span class="k">Cover range</span><span class="v">{{ r.minCover | currency:'UGX':'USh ':'1.0-0' }} – {{ r.maxCover | currency:'UGX':'USh ':'1.0-0' }}</span></div>
+          <div><span class="k">Claim settlement</span><span class="v strong">{{ r.claimSettlementDays }} days</span></div>
+        </div>
+
+        <div class="tags">
+          @for (b of r.benefits; track b) {
+            <span class="tag">{{ b }}</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

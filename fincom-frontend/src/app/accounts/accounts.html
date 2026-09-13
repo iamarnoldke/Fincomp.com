@@ -1,0 +1,54 @@
+<header class="page-header">
+  <h1>Open an account</h1>
+  <p class="greeting">Compare account types, opening requirements, and charges.</p>
+  <a class="back-link" routerLink="/dashboard">Back to dashboard</a>
+</header>
+
+<div class="type-tabs" aria-label="Account type filter">
+  @for (t of accountTypes(); track t) {
+    <button class="type-tab" type="button" [class.active]="t === selectedType()" (click)="selectedType.set(t)">
+      {{ t }}
+    </button>
+  }
+</div>
+
+@if (recommended(); as rec) {
+  <div class="recommend-banner">
+    <span class="rec-badge">✓ Recommended for you</span>
+    <div class="rec-content">
+      <app-bank-logo [bankId]="rec.bankId" [size]="34" />
+      <span class="rec-text"><strong>{{ rec.bank }}</strong> — {{ rec.name }} offers the best overall value among {{ selectedType() === 'All' ? 'all accounts' : (selectedType() + ' accounts') }} right now.</span>
+    </div>
+  </div>
+}
+
+<div class="acc-grid">
+  @for (a of results(); track a.bankId + a.name; let i = $index) {
+    <article class="acc-card" [class.best]="i === 0">
+      @if (i === 0) { <span class="badge">Best value</span> }
+      <div class="acc-head">
+        <app-bank-logo [bankId]="a.bankId" [size]="40" />
+        <div>
+          <span class="acc-bank">{{ a.bank }}</span>
+          <span class="acc-name">{{ a.name }}</span>
+        </div>
+        <span class="acc-type">{{ a.type }}</span>
+      </div>
+
+      <div class="charges">
+        <div class="charge"><span class="c-k">To open</span><span class="c-v">{{ a.minOpeningBalance === 0 ? 'Free' : (a.minOpeningBalance | currency:'UGX':'USh ':'1.0-0') }}</span></div>
+        <div class="charge"><span class="c-k">Min balance</span><span class="c-v">{{ a.minBalance === 0 ? 'None' : (a.minBalance | currency:'UGX':'USh ':'1.0-0') }}</span></div>
+        <div class="charge"><span class="c-k">Monthly fee</span><span class="c-v">{{ a.monthlyFee === 0 ? 'Free' : (a.monthlyFee | currency:'UGX':'USh ':'1.0-0') }}</span></div>
+        <div class="charge"><span class="c-k">Withdrawal</span><span class="c-v">{{ a.withdrawalFee === 0 ? 'Free' : (a.withdrawalFee | currency:'UGX':'USh ':'1.0-0') }}</span></div>
+        <div class="charge highlight"><span class="c-k">Interest p.a.</span><span class="c-v">{{ a.savingsRate > 0 ? a.savingsRate + '%' : '—' }}</span></div>
+      </div>
+
+      <div class="req">
+        <span class="req-title">Requirements to open</span>
+        <ul>
+          @for (r of a.requirements; track r) { <li>{{ r }}</li> }
+        </ul>
+      </div>
+    </article>
+  }
+</div>

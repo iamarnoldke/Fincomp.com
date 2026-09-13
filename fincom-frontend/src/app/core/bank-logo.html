@@ -1,0 +1,7 @@
+<span class="bank-logo" [style.background]="color()" [style.width.px]="size()" [style.height.px]="size()">
+  @if (showImage()) {
+    <img [src]="logoUrl()" [alt]="name() + ' logo'" loading="lazy" (error)="onError()" />
+  } @else {
+    <span class="bank-logo-initials" [style.font-size.px]="size() * 0.34">{{ initials() }}</span>
+  }
+</span>

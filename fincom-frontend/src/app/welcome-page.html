@@ -1,0 +1,39 @@
+<section class="welcome-shell">
+  <div class="hero-card">
+    <div class="hero-copy">
+      <span class="eyebrow">Fincomp</span>
+      <h1>Your money access and finacial knowledge, simplified.</h1>
+      <p>
+        Compare loans, open accounts, monitor your credit score, and discover smarter financial decisions — all in one place.
+      </p>
+
+      <div class="cta-row">
+        @if (isLoggedIn()) {
+          <button class="primary-btn" type="button" (click)="continueToApp()">Go to dashboard</button>
+        } @else {
+          <a class="primary-btn" routerLink="/signup">Create account</a>
+          <a class="secondary-btn" routerLink="/login">Log in</a>
+        }
+      </div>
+    </div>
+
+    <div class="hero-panel" aria-label="Features overview">
+      <div class="feature-item">
+        <strong>Loans</strong>
+        <span>Compare Uganda’s top lending options instantly.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Accounts</strong>
+        <span>See account types, access requirements, and fees.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Credit score</strong>
+        <span>Check your score and understand what impacts it.</span>
+      </div>
+      <div class="feature-item">
+        <strong>Insurance</strong>
+        <span>Compare cover options to protect what matters most.</span>
+      </div>
+    </div>
+  </div>
+</section>
