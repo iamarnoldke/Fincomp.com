@@ -1,0 +1,4 @@
+{
+  "builds": [{ "src": "fincom-backend/app/main.py", "use": "@vercel/python" }],
+  "routes": [{ "src": "/(.*)", "dest": "fincom-backend/app/main.py" }]
+}
