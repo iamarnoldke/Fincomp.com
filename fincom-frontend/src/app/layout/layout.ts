@@ -18,7 +18,7 @@ export class Layout {
   navItems = signal([
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Compare loans', path: '/compare' },
-    { label: 'Open an account', path: '/accounts' },
+    { label: 'Compare Accounts', path: '/accounts' },
     { label: 'Credit score', path: '/credit-score' },
     { label: 'Compare insurance', path: '/insurance' },
   ]);
