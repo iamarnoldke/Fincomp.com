@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import models 
 from app.core.config import settings
-from app.routers import accounts, auth, banks, credit_score, insurance, loans
+from app.routers import accounts, auth, banks, credit_score, dashboard, insurance, loans
 
 app = FastAPI(title="Fincom API", version="0.1.0")
 
@@ -21,6 +21,7 @@ app.include_router(loans.router)
 app.include_router(accounts.router)
 app.include_router(insurance.router)
 app.include_router(credit_score.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/health")
