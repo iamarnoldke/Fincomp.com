@@ -1,109 +1,151 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { FinanceData } from '../finance-data';
 import { ErrorHandlerService } from '../core/error-handler.service';
+import { DashboardApiService, DashboardSummary } from './dashboard-api.service';
+
+
+export function timeAgo(when: Date, now: Date = new Date()): string {
+  const minutes = Math.floor((now.getTime() - when.getTime()) / 60_000);
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 @Injectable({ providedIn: 'root' })
 export class DashboardViewModel {
-  private readonly data = inject(FinanceData);
+  private readonly api = inject(DashboardApiService);
   private readonly errorHandler = inject(ErrorHandlerService);
 
-  readonly today = 'Today';
-  readonly creditScore = signal(712);
+
+  readonly summary = signal<DashboardSummary | null>(null);
+  readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  private readonly sampleAmount = 20_000_000;
-  private readonly sampleTerm = 24;
+  readonly hasData = computed(() => this.summary() !== null);
 
-  private totalCost(rate: number): number {
-    const r = rate / 100 / 12;
-    const n = this.sampleTerm;
-    const p = this.sampleAmount;
-    const m = r === 0 ? p / n : (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-    return m * n;
+
+  load(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    this.api.getSummary().subscribe({
+      next: (summary) => {
+        this.summary.set(summary);
+        this.loading.set(false);
+      },
+      error: (caught) => {
+        const message =
+          caught instanceof HttpErrorResponse && caught.status === 401
+            ? 'Your session has expired. Please log out and log in again.'
+            : this.errorHandler.handle(caught, 'Unable to load live dashboard data.').message;
+        this.error.set(message);
+        this.loading.set(false);
+      },
+    });
   }
 
-  readonly potentialSavings = computed(() => {
-    try {
-      const costs = this.data.loans().map((l) => this.totalCost(l.annualRate));
-      return Math.max(...costs) - Math.min(...costs);
-    } catch (caught) {
-      const appError = this.errorHandler.handle(caught, 'Unable to calculate dashboard savings.');
-      this.error.set(appError.message);
-      return 0;
-    }
+
+  readonly today = new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
-  readonly productsCompared = computed(() => this.data.loans().length + this.data.accounts().length);
-  readonly bankCount = computed(() => this.data.banks().length);
+  readonly ratesUpdated = computed(() => {
+    const when = this.summary()?.ratesLastUpdated;
+    return when
+      ? when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : '';
+  });
+
+
+  readonly creditScore = computed<number | null>(() => this.summary()?.creditScore ?? null);
+  readonly potentialSavings = computed(() => this.summary()?.potentialSavings ?? 0);
+  readonly productsCompared = computed(() => this.summary()?.productsCompared ?? 0);
+  readonly bankCount = computed(() => this.summary()?.bankCount ?? 0);
+  readonly activityCount = computed(() => this.summary()?.activityCount30d ?? 0);
 
   readonly scoreRating = computed(() => {
     const s = this.creditScore();
+    if (s === null) return 'No score yet';
     if (s >= 750) return 'Excellent';
     if (s >= 670) return 'Good';
     if (s >= 580) return 'Fair';
     return 'Poor';
   });
 
-  readonly circ = 2 * Math.PI * 52;
-  readonly scoreDash = computed(() => ((this.creditScore() - 300) / 550) * this.circ);
-
-  readonly rateBars = computed(() => {
-    try {
-      const loans = [...this.data.loans()].sort((a, b) => a.annualRate - b.annualRate);
-      const max = Math.max(...loans.map((l) => l.annualRate));
-      return loans.map((l, i) => ({
-        bankId: l.bankId,
-        bank: this.data.bankName(l.bankId),
-        rate: l.annualRate,
-        pct: (l.annualRate / max) * 100,
-        best: i === 0,
-      }));
-    } catch (caught) {
-      const appError = this.errorHandler.handle(caught, 'Unable to load rate comparison.');
-      this.error.set(appError.message);
-      return [];
-    }
-  });
-
-  readonly bestLoan = computed(() => this.rateBars()[0] ?? { bankId: '', bank: 'No data', rate: 0, pct: 0, best: false });
-
-  readonly recommended = computed(() =>
-    [...this.data.loans()]
-      .sort((a, b) => a.annualRate - b.annualRate)
-      .slice(0, 4)
-      .map((l) => ({ bankId: l.bankId, bank: this.data.bankName(l.bankId), name: l.name, rate: l.annualRate }))
+  readonly scoreStanding = computed(() =>
+    this.creditScore() === null ? 'Not checked yet' : `${this.scoreRating()} standing`
   );
 
-  readonly activity = signal([
-    { text: 'Compared 8 personal loans', when: '2h ago', kind: 'compare' },
-    { text: 'Credit score updated to 712', when: '1d ago', kind: 'score' },
-    { text: 'Saved dfcu Smart Plan account', when: '2d ago', kind: 'save' },
-    { text: 'Applied for Stanchart Personal Loan', when: '4d ago', kind: 'apply' },
-  ]);
+  readonly circ = 2 * Math.PI * 52;
+  readonly scoreDash = computed(() => {
+    const s = this.creditScore();
+    return s === null ? 0 : ((s - 300) / 550) * this.circ;
+  });
+
+
+  readonly rateBars = computed(() => {
+    const rates = this.summary()?.rates ?? [];
+    const max = Math.max(...rates.map((r) => r.rate), 0);
+    return rates.map((r, i) => ({
+      id: r.id,
+      bankId: r.bankId,
+      bank: r.bank,
+      name: r.name,
+      rate: r.rate,
+      pct: max > 0 ? (r.rate / max) * 100 : 0,
+      best: i === 0,
+    }));
+  });
+
+  readonly bestLoan = computed(
+    () => this.rateBars()[0] ?? { id: '', bankId: '', bank: 'No data', name: '', rate: 0, pct: 0, best: false }
+  );
+
+  readonly recommended = computed(() =>
+    (this.summary()?.rates ?? []).slice(0, 4).map((r) => ({
+      id: r.id,
+      bankId: r.bankId,
+      bank: r.bank,
+      name: r.name,
+      rate: r.rate,
+    }))
+  );
+
 
   readonly popularLoans = computed(() =>
-    [...this.data.loans()]
-      .sort((a, b) => b.popularity - a.popularity)
-      .slice(0, 5)
-      .map((l) => ({
-        bank: this.data.bankName(l.bankId),
-        name: l.name,
-        type: l.type,
-        rate: l.annualRate,
-        popularity: l.popularity,
-      }))
+    (this.summary()?.popularLoans ?? []).map((p) => ({
+      id: p.id,
+      bank: p.bank,
+      name: p.name,
+      type: p.category,
+      rate: p.rate,
+      popularity: p.popularity,
+    }))
   );
 
   readonly popularInsurance = computed(() =>
-    [...this.data.insurancePolicies()]
-      .sort((a, b) => b.popularity - a.popularity)
-      .slice(0, 5)
-      .map((p) => ({
-        bank: this.data.bankName(p.bankId),
-        name: p.name,
-        type: p.type,
-        insurer: p.insurer,
-        popularity: p.popularity,
-      }))
+    (this.summary()?.popularInsurance ?? []).map((p) => ({
+      id: p.id,
+      bank: p.bank,
+      name: p.name,
+      type: p.category,
+      insurer: p.insurer,
+      popularity: p.popularity,
+    }))
+  );
+
+
+  readonly activity = computed(() =>
+    (this.summary()?.activity ?? []).map((a) => ({
+      kind: a.kind,
+      text: a.text,
+      when: timeAgo(a.occurredAt),
+    }))
   );
 }

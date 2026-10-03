@@ -526,3 +526,42 @@
     flex-direction: column;
   }
 }
+
+/* Load / error status banner and empty states */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--brand-light);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.notice-error {
+  background: #fdecec;
+  border-color: #f3b8ba;
+  color: #7a1d21;
+}
+
+.notice-btn {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.empty-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  list-style: none;
+}
