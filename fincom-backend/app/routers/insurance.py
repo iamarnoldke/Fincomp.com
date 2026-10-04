@@ -3,10 +3,13 @@ from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
+from app.core.deps import get_optional_user
 from app.db.session import get_db
 from app.models.bank import Bank
 from app.models.insurance import InsuranceProduct
+from app.models.user import User
 from app.schemas.insurance import InsuranceCompareResponse
+from app.services.activity import log_activity
 from app.services.insurance_calculator import build_comparison
 
 router = APIRouter(prefix="/insurance", tags=["insurance"])
@@ -22,6 +25,7 @@ async def compare_insurance(
         None, description="Free-text search over policy name, type, underwriter, or bank name."
     ),
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
 ):
     """
     Powers the Compare Insurance screen. Matches insurance-view-model.ts:
@@ -65,4 +69,14 @@ async def compare_insurance(
     result = await db.execute(stmt)
     products = result.unique().scalars().all()
 
-    return build_comparison(products, cover)
+    comparison = build_comparison(products, cover)
+
+    # Record it for the signed-in user (throttled; never breaks the response).
+    # Free-text searches are logged generically so what people type is not stored.
+    if search:
+        description = "Searched insurance"
+    else:
+        description = f"Compared {insurance_type.replace('_', ' ')} insurance"
+    await log_activity(db, user, "compare", description)
+
+    return comparison

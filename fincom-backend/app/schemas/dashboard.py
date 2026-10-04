@@ -57,7 +57,7 @@ class DashboardSummaryOut(BaseModel):
     sample_amount: float
     sample_term_months: int
     potential_savings: float
-
+    credit_score: int | None
     activity_count_30d: int
 
     rate_bars: list[RateBarOut]

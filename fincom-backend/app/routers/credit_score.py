@@ -9,6 +9,7 @@ from app.db.session import get_db
 from app.models.credit_score import CreditScoreSnapshot
 from app.models.user import User
 from app.schemas.credit_score import CreditScoreProfileOut
+from app.services.activity import log_activity
 from app.services.credit_score_engine import build_profile, refresh_snapshot
 
 router = APIRouter(prefix="/credit-score", tags=["credit-score"])
@@ -37,10 +38,15 @@ async def get_my_credit_score(
     (first visit), one is generated and stored on the fly.
     """
     latest, previous = await _latest_two_snapshots(db, user.id)
-    if latest is None:
+    first_visit = latest is None
+    if first_visit:
         latest = await refresh_snapshot(db, user)
         previous = None
-    return await build_profile(db, latest, previous)
+    profile = await build_profile(db, latest, previous)
+
+    if first_visit:
+        await log_activity(db, user, "score", f"Checked credit score ({latest.score})")
+    return profile
 
 
 @router.post("/refresh", response_model=CreditScoreProfileOut)
@@ -50,4 +56,7 @@ async def refresh_my_credit_score(
     """Powers the Refresh button — recomputes and stores a new snapshot."""
     previous, _ = await _latest_two_snapshots(db, user.id)
     latest = await refresh_snapshot(db, user)
-    return await build_profile(db, latest, previous)
+    profile = await build_profile(db, latest, previous)
+
+    await log_activity(db, user, "score", f"Credit score updated to {latest.score}")
+    return profile

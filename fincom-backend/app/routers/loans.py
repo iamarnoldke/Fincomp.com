@@ -3,9 +3,12 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
+from app.core.deps import get_optional_user
 from app.db.session import get_db
 from app.models.loan import LoanProduct
+from app.models.user import User
 from app.schemas.loan import LoanCompareResult
+from app.services.activity import log_activity
 from app.services.loan_calculator import build_comparison
 
 router = APIRouter(prefix="/loans", tags=["loans"])
@@ -18,6 +21,7 @@ async def compare_loans(
     category: str | None = Query(None, description="Loan category slug, e.g. 'education'"),
     search: str | None = Query(None, description="Free-text search over product name"),
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
 ):
     """
     Powers the Compare Loans screen. Filters products whose amount/term
@@ -46,4 +50,16 @@ async def compare_loans(
     if not products:
         raise HTTPException(status_code=404, detail="No matching loan products found")
 
-    return build_comparison(products, amount, term_months)
+    comparison = build_comparison(products, amount, term_months)
+
+    # Record it for the signed-in user (throttled; never breaks the response).
+    # Free-text searches are logged generically so what people type is not stored.
+    if search:
+        description = "Searched loans"
+    elif category:
+        description = f"Compared {category.replace('_', ' ')} loans"
+    else:
+        description = "Compared loans"
+    await log_activity(db, user, "compare", description)
+
+    return comparison
