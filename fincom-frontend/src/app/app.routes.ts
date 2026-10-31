@@ -7,6 +7,8 @@ export const routes: Routes = [
   { path: '', redirectTo: 'welcome', pathMatch: 'full' },
   { path: 'welcome', loadComponent: () => import('./welcome-page').then((m) => m.WelcomePage) },
   { path: 'login', loadComponent: () => import('./login-page').then((m) => m.LoginPage) },
+  { path: 'forgot-password', loadComponent: () => import('./forgot-password-page').then((m) => m.ForgotPasswordPage) },
+  { path: 'reset-password', loadComponent: () => import('./reset-password-page').then((m) => m.ResetPasswordPage) },
   { path: 'signup', loadComponent: () => import('./signup-page').then((m) => m.SignupPage) },
   {
     path: '',

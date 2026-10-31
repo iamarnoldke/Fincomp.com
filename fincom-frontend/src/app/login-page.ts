@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from './auth';
+import { AuthLayout } from './auth-ui/auth-layout';
+import { PasswordField } from './auth-ui/password-field';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AuthLayout, PasswordField],
   templateUrl: './login-page.html',
-  styleUrl: './login-page.css',
 })
 export class LoginPage {
   private readonly router = inject(Router);
@@ -22,15 +23,15 @@ export class LoginPage {
 
   email    = '';
   password = '';
-  error    = '';
+  error    = signal('');
   loading  = signal(false);
 
   async submit(): Promise<void> {
-    this.error = '';
+    this.error.set('');
 
     const trimmedEmail = this.email.trim();
     if (!trimmedEmail || !this.password.trim()) {
-      this.error = 'Please enter both your email and password.';
+      this.error.set('Please enter both your email and password.');
       return;
     }
 
@@ -39,7 +40,7 @@ export class LoginPage {
       await this.auth.login(trimmedEmail, this.password);
       this.router.navigate(['/dashboard']);
     } catch (caught) {
-      this.error = caught instanceof Error ? caught.message : 'Unable to sign you in right now.';
+      this.error.set(caught instanceof Error ? caught.message : 'Unable to sign you in right now.');
     } finally {
       this.loading.set(false);
     }

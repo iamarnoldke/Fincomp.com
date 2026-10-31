@@ -15,7 +15,7 @@
   --shadow: 0 4px 16px rgba(29, 132, 214, 0.08);
 }
 
-body { background: var(--bg); color: var(--text); }
+body { margin: 0; background: var(--bg); color: var(--text); }
 :root {
   --ink: #14233a;
   --ink-soft: #52657c;

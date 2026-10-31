@@ -22,6 +22,10 @@ export interface UserOut {
   full_name: string;
 }
 
+export interface MessageResponse {
+  message: string;
+}
+
 export interface TokenResponse {
   access_token: string;
   token_type: string;
@@ -44,6 +48,18 @@ export class AuthApiService {
       .pipe(catchError(this.handleError));
   }
 
+  forgotPassword(payload: { email: string }) {
+    return this.http
+      .post<MessageResponse>(`${API_BASE_URL}/auth/forgot-password`, payload)
+      .pipe(catchError(this.handleError));
+  }
+
+  resetPassword(payload: { token: string; new_password: string }) {
+    return this.http
+      .post<MessageResponse>(`${API_BASE_URL}/auth/reset-password`, payload)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(err: HttpErrorResponse) {
     if (err.status === 0) {
       return throwError(() => new Error('Cannot reach the server. Please try again later.'));
@@ -54,7 +70,7 @@ export class AuthApiService {
     }
     if (Array.isArray(detail) && detail.length > 0) {
 
-      const msg = detail[0]?.msg ?? 'Validation error';
+      const msg = String(detail[0]?.msg ?? 'Validation error').replace(/^Value error, /, '');
       return throwError(() => new Error(msg));
     }
     return throwError(() => new Error(`Unexpected error (${err.status}). Please try again.`));

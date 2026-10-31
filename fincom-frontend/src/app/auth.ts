@@ -46,6 +46,21 @@ export class Auth {
   }
 
 
+  /** Asks the server to email a reset link. Returns its (always generic) message. */
+  async requestPasswordReset(email: string): Promise<string> {
+    const response = await firstValueFrom(
+      this.api.forgotPassword({ email: email.trim().toLowerCase() })
+    );
+    return response.message;
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<string> {
+    const response = await firstValueFrom(
+      this.api.resetPassword({ token, new_password: newPassword })
+    );
+    return response.message;
+  }
+
   logout(): void {
     this.currentUser.set(null);
     try {

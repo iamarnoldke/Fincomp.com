@@ -205,6 +205,19 @@ CREATE TABLE user_activity_log (
     occurred_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_activity_user_time ON user_activity_log (user_id, occurred_at DESC);
+-- ---------------------------------------------------------------------
+-- PASSWORD RESET TOKENS (only the SHA-256 hash of the emailed token is stored)
+-- ---------------------------------------------------------------------
+CREATE TABLE password_reset_tokens (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id     UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    token_hash  CHAR(64) NOT NULL UNIQUE,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    expires_at  TIMESTAMPTZ NOT NULL,
+    used_at     TIMESTAMPTZ
+);
+CREATE INDEX idx_reset_tokens_user ON password_reset_tokens (user_id, created_at DESC);
+
 
 -- ---------------------------------------------------------------------
 -- updated_at auto-touch trigger

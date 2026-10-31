@@ -13,3 +13,4 @@ from app.models.insurance import InsuranceProduct, InsuranceProductBenefit  # no
 from app.models.loan import LoanProduct  # noqa: F401
 from app.models.user import User  # noqa: F401
 from app.models.user_activity import UserActivityLog  # noqa: F401
+from app.models.password_reset import PasswordResetToken  # noqa: F401

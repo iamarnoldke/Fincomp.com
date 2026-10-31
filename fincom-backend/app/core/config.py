@@ -19,6 +19,19 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60 * 24  # 24h
 
+    # ---- Password reset email -------------------------------------------
+    # Where the Angular app lives; the emailed link is built from this.
+    frontend_url: str = "http://localhost:4200"
+    reset_token_minutes: int = 30
+
+    # Brevo (https://www.brevo.com) transactional email over HTTPS. Render's
+    # free tier blocks SMTP ports, so we use their HTTP API. If the API key
+    # is empty the reset link is printed in the server log instead of emailed
+    # (handy for local development).
+    brevo_api_key: str = ""
+    mail_from_email: str = ""
+    mail_from_name: str = "Fincomp"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",")]
