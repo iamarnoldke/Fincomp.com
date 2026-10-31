@@ -117,3 +117,30 @@
 @media (max-width: 600px) {
   .acc-grid { grid-template-columns: 1fr; }
 }
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--brand) 28%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-light), #fff);
+  color: var(--brand-dark);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.back-btn:hover {
+  background: var(--brand-soft);
+  box-shadow: 0 6px 18px rgba(29, 132, 214, 0.15);
+  transform: translateY(-1px);
+}
+
+.back-btn:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
