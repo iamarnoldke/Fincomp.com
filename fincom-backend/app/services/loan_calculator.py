@@ -43,7 +43,7 @@ def build_comparison(
                 total_repayable=round(total_repayable, 2),
                 processing_fee_amount=round(processing_fee_amount, 2),
                 total_cost=round(total_cost, 2),
-                is_recommended=False,  # set below
+                is_recommended=False, 
             )
         )
 
