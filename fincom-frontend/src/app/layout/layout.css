@@ -25,11 +25,44 @@
   box-shadow: 0 10px 30px rgba(20, 35, 58, 0.05);
 }
 
-.brand-block {
+.menu {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: space-between;
+  gap: 1rem;
   min-width: 0;
+}
+
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0 11px;
+  border: 1px solid color-mix(in srgb, var(--brand) 28%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-light), #fff);
+  cursor: pointer;
+}
+
+.menu-toggle .bar {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--brand-dark);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.menu-toggle.open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-toggle.open .bar:nth-child(2) { opacity: 0; }
+.menu-toggle.open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-toggle .bar { transition: none; }
 }
 
 .logo {
@@ -150,6 +183,7 @@
 }
 
 .nav-item:focus-visible,
+.menu-toggle:focus-visible,
 .logout:focus-visible {
   outline: 3px solid var(--brand);
   outline-offset: 2px;
@@ -157,33 +191,51 @@
 
 @media (max-width: 760px) {
   .topbar {
+    flex-wrap: wrap;
+    padding: 0.7rem 1rem;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+
+  .menu {
+    display: none;
+    flex: 1 1 100%;
     flex-direction: column;
     align-items: stretch;
-    padding: 0.9rem 1rem;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
   }
 
-  .brand-block {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .brand-block .logo {
-    flex-shrink: 0;
-  }
-
-  .topbar-actions {
-    width: 100%;
-    justify-content: flex-end;
+  .menu.open {
+    display: flex;
   }
 
   .nav {
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: 0.15rem;
+    flex-direction: column;
+    flex-wrap: nowrap;
   }
 
   .nav-item {
-    white-space: nowrap;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  .topbar-actions {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding-bottom: 0.25rem;
+  }
+
+  .logout,
+  .login-link {
+    padding: 0.75rem 1rem;
   }
 
   .page {
@@ -193,15 +245,7 @@
 }
 
 @media (max-width: 420px) {
-  .topbar {
-    position: static;
-  }
-
   .brand-copy strong {
     font-size: 1rem;
-  }
-
-  .topbar-actions {
-    justify-content: center;
   }
 }
