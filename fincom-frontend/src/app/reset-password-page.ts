@@ -22,11 +22,6 @@ export class ResetPasswordPage {
   loading  = signal(false);
   done     = signal(false);
 
-  /**
-   * The token comes from the emailed link (?token=...). It is read after the
-   * first render in the browser so the server-rendered page and the browser's
-   * first render match (the pre-built page cannot know the token).
-   */
   ready = signal(false);
   token = signal('');
 

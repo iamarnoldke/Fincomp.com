@@ -14,3 +14,4 @@ from app.models.loan import LoanProduct  # noqa: F401
 from app.models.user import User  # noqa: F401
 from app.models.user_activity import UserActivityLog  # noqa: F401
 from app.models.password_reset import PasswordResetToken  # noqa: F401
+from app.models.bou_rates import BankRateSnapshot, BouEdition  # noqa: F401

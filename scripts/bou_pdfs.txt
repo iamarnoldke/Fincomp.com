@@ -1,0 +1,5 @@
+# One Bank of Uganda rates PDF address per line. Lines starting with # are ignored.
+# When the BoU publishes a new quarter, add its PDF address here and push.
+# Adding one that is already imported is harmless.
+https://www.bou.or.ug/uploads/Commercial_Banks_Interest_Rates_and_Bank_Charges_as_at_01_April_2026_25716d34bb.pdf
+https://bou.or.ug/uploads/Commercial_Banks_Interest_Rates_and_Bank_Charges_as_at_01_Jan_2026_55a977159d.pdf

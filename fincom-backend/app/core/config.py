@@ -1,9 +1,4 @@
-"""
-Central app configuration. Reads from a .env file (see .env.example)
-so secrets never get hardcoded or committed.
-"""
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -31,6 +26,10 @@ class Settings(BaseSettings):
     brevo_api_key: str = ""
     mail_from_email: str = ""
     mail_from_name: str = "Fincomp"
+        # ---- Bank of Uganda import ------------------------------------------
+    # Secret the weekly job sends in X-Cron-Secret. Empty = endpoint disabled.
+    cron_secret: str = ""
+
 
     @property
     def cors_origin_list(self) -> list[str]:

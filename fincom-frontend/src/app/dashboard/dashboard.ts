@@ -3,12 +3,14 @@ import { CurrencyPipe, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DashboardViewModel } from './dashboard-view-model';
 import { BankLogo } from '../core/bank-logo';
+import { BouPanel } from './bou-panel';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CurrencyPipe, RouterLink, BankLogo],
+  imports: [CurrencyPipe, RouterLink, BankLogo, BouPanel],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
+
 })
 export class Dashboard implements OnInit {
   private readonly viewModel = inject(DashboardViewModel);

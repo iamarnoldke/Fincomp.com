@@ -2,7 +2,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-
 import { API_BASE_URL } from '../core/api-config';
 import { Dashboard } from './dashboard';
 import { timeAgo } from './dashboard-view-model';
@@ -48,7 +47,10 @@ describe('Dashboard', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.match(`${API_BASE_URL}/bou/summary`);
+    http.verify();
+  });
 
   it('requests live data from the backend', () => {
     http.expectOne(`${API_BASE_URL}/dashboard/summary`).flush(SUMMARY);

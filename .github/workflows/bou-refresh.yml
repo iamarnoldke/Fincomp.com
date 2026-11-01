@@ -1,0 +1,17 @@
+name: Bank of Uganda weekly refresh
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"   # Mondays, 05:17 UTC
+  workflow_dispatch: {}     # lets you run it by hand from the Actions tab
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import any new Bank of Uganda edition
+        env:
+          API_URL: https://fincom-backend.onrender.com
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: python3 scripts/bou_refresh.py
